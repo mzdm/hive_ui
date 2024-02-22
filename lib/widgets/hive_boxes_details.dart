@@ -206,15 +206,17 @@ class _HiveBoxesDetailsState extends State<HiveBoxesDetails> with BoxViewMixin {
                 onSearchValue: onSearchValue,
                 fields: widget.columns,
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text("length of data :  ${rows.length}"),
-              ),
             ],
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 32.0),
+            padding: const EdgeInsets.all(8.0),
+            child: Text("length of data :  ${rows.length}"),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 2.0),
             child: Wrap(
+              spacing: -40,
+              runSpacing: -10,
               children: [
                 TextButton(
                   onPressed: () => widget.onAddRow.call(

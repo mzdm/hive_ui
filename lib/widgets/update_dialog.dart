@@ -80,12 +80,12 @@ class _UpdateDialogState extends State<UpdateDialog> {
         ),
       ),
       child: Container(
-        constraints: BoxConstraints.loose(
-          Size(
-            mediaQuerySize.width * 0.5,
-            mediaQuerySize.height * 0.6,
-          ),
-        ),
+        // constraints: BoxConstraints.loose(
+        //   Size(
+        //     mediaQuerySize.width * 0.5,
+        //     mediaQuerySize.height * 0.6,
+        //   ),
+        // ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -176,9 +176,9 @@ class _UpdateDialogState extends State<UpdateDialog> {
                 padding: const EdgeInsets.symmetric(horizontal: 32.0),
                 child: Align(
                   alignment: Alignment.bottomRight,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    mainAxisSize: MainAxisSize.min,
+                  child: Column(
+                    // mainAxisAlignment: MainAxisAlignment.end,
+                    // mainAxisSize: MainAxisSize.min,
                     children: [
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
@@ -205,7 +205,7 @@ class _UpdateDialogState extends State<UpdateDialog> {
                           ),
                         ),
                       ),
-                      const SizedBox(width: 24),
+                      const SizedBox(height: 4),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           fixedSize: const Size(125, 42),

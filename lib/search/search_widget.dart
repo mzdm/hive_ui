@@ -52,7 +52,7 @@ class _SearchWidgetState extends State<SearchWidget> {
               vertical: 8,
             ),
             height: 65,
-            width: MediaQuery.of(context).size.width * 0.25,
+            width: MediaQuery.of(context).size.width * 0.5,
             child: TextFormField(
               controller: textEditingController,
               onChanged: widget.onSearch,
@@ -73,7 +73,7 @@ class _SearchWidgetState extends State<SearchWidget> {
             ),
             constraints: BoxConstraints.loose(
               Size(
-                MediaQuery.of(context).size.width * 0.3,
+                MediaQuery.of(context).size.width * 0.5,
                 65,
               ),
             ),
@@ -83,7 +83,7 @@ class _SearchWidgetState extends State<SearchWidget> {
                 contentPadding: EdgeInsets.symmetric(horizontal: 16),
               ),
               onChanged: widget.onSearch,
-              displayItemFn: (str) => Text(str ?? ""),
+              displayItemFn: (str) => Text(str ?? "-Pick column to search-"),
               findFn: (str) async => widget.fields
                   .where((element) => element.startsWith(str))
                   .toList(),

@@ -19,12 +19,14 @@ typedef ErrorCallback = void Function(String errorMessage);
 typedef FromJsonConverter = dynamic Function(dynamic json);
 typedef ToJsonConverter = dynamic Function(dynamic object);
 typedef ToMapConverter = Map<String, dynamic> Function(String str);
+typedef FromMapConverter = dynamic Function(Map<String, dynamic> map);
 
 typedef BoxWithSerialization = ({
   Box<dynamic> box,
   ToJsonConverter toJson,
   FromJsonConverter fromJson,
   ToMapConverter toMap,
+  FromMapConverter fromMap,
 });
 
 class HiveBoxesView extends StatefulWidget {
@@ -201,7 +203,7 @@ class _HiveBoxesViewState extends State<HiveBoxesView> {
         currentOpenedBox: selectedBoxWithSerialization.box,
         selectedBoxValue: selectedBoxWithSerialization.box.values.map<Map<String, dynamic>>((e) {
           // print(e);
-          return selectedBoxWithSerialization.toMap(e);
+          return selectedBoxWithSerialization.toMap(e.toString());
         }).toList(),
         objectNestedIndices: [],
       );

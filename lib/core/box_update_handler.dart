@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 
 import '../boxes_view.dart';
@@ -79,7 +78,7 @@ class BoxUpdateHandler {
       index = objectIndex!;
       updatedObjectJson = boxValue[index];
     }
-    debugPrint(_hiveViewState.objectNestedIndices.toString());
+    // debugPrint(_hiveViewState.objectNestedIndices.toString());
     return await _updateBoxWithObject(
       currentBox,
       index,
@@ -99,9 +98,10 @@ class BoxUpdateHandler {
     dynamic replacementObject,
   ) async {
     try {
-      final fromJson = _hiveViewState.boxesMap.firstWhere((e) => e.box.name == box.name).fromJson;
-      final updatedObject = fromJson(replacementObject);
-      await box.putAt(indexOfObject, updatedObject);
+      final boxOptions = _hiveViewState.boxesMap.firstWhere((e) => e.box.name == box.name);
+      final updatedObject = boxOptions.fromMap(replacementObject);
+      final serializedObject = boxOptions.toJson(updatedObject);
+      await box.putAt(indexOfObject, serializedObject);
       return true;
     } catch (e) {
       _errorCallback(e.toString());

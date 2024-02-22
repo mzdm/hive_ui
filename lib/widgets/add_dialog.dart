@@ -66,10 +66,10 @@ class _AddNewDialogState extends State<AddNewDialog> {
         ),
       ),
       child: Container(
-        constraints: BoxConstraints.loose(Size(
-          mediaQuerySize.width * 0.5,
-          mediaQuerySize.height * 0.6,
-        )),
+        // constraints: BoxConstraints.loose(Size(
+        //   mediaQuerySize.width * 0.5,
+        //   mediaQuerySize.height * 0.6,
+        // )),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -181,59 +181,49 @@ class _AddNewDialogState extends State<AddNewDialog> {
               ),
             ),
             const SizedBox(height: 24),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                      elevation: 0,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(12),
-                        ),
-                      ),
-                      fixedSize: const Size(
-                        100,
-                        42,
-                      ),
-                    ),
-                    child: const Text(
-                      'Reset',
-                      style: TextStyle(color: Colors.white),
-                    ),
+            ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                elevation: 0,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(12),
                   ),
-                  const SizedBox(
-                    width: 24,
+                ),
+                fixedSize: const Size(
+                  100,
+                  42,
+                ),
+              ),
+              child: const Text(
+                'Reset',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+            const SizedBox(height: 4),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context, widget.objectAsJson);
+              },
+              style: ElevatedButton.styleFrom(
+                elevation: 0,
+                backgroundColor: Colors.green,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(12),
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context, widget.objectAsJson);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      elevation: 0,
-                      backgroundColor: Colors.green,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(12),
-                        ),
-                      ),
-                      fixedSize: const Size(
-                        100,
-                        42,
-                      ),
-                    ),
-                    child: const Text(
-                      'Confirm',
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ],
+                ),
+                fixedSize: const Size(
+                  100,
+                  42,
+                ),
+              ),
+              child: const Text(
+                'Confirm',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
               ),
             ),
             const SizedBox(height: 32),
