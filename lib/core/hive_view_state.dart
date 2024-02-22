@@ -6,7 +6,7 @@ typedef HiveViewObject = List<Map<String, dynamic>>;
 
 class HiveViewState {
   /// A map of Box objects and their associated FromJsonConverter functions
-  final Map<Box, FromJsonConverter> boxesMap;
+  final List<BoxWithSerialization> boxesMap;
 
   /// The currently opened box
   final Box? currentOpenedBox;
@@ -40,7 +40,7 @@ class HiveViewState {
     Box? currentOpenedBox,
     HiveViewObject? selectedBoxValue,
     List<HiveViewObject>? nestedObjectList,
-    Map<Box, FromJsonConverter>? boxesMap,
+    List<BoxWithSerialization>? boxesMap,
     List<Map<int, String>>? objectNestedIndices,
   }) {
     return HiveViewState(

@@ -17,12 +17,21 @@ typedef FieldPressedCallback = void Function(
 });
 typedef ErrorCallback = void Function(String errorMessage);
 typedef FromJsonConverter = dynamic Function(dynamic json);
+typedef ToJsonConverter = dynamic Function(dynamic object);
+typedef ToMapConverter = Map<String, dynamic> Function(String str);
+
+typedef BoxWithSerialization = ({
+  Box<dynamic> box,
+  ToJsonConverter toJson,
+  FromJsonConverter fromJson,
+  ToMapConverter toMap,
+});
 
 class HiveBoxesView extends StatefulWidget {
   final Color? appBarColor;
   final TextStyle? columnTitleTextStyle;
   final TextStyle? rowTitleTextStyle;
-  final Map<Box, FromJsonConverter> hiveBoxes;
+  final List<BoxWithSerialization> hiveBoxes;
 
   final ErrorCallback onError;
   final String? dateFormat;
@@ -181,18 +190,19 @@ class _HiveBoxesViewState extends State<HiveBoxesView> {
     }
   }
 
-  void _onBoxSelected(String boxName, List<Box> boxesList) {
-    final selectedBox = boxesList.singleWhere(
-      (element) => element.name == boxName,
+  void _onBoxSelected(String boxName, List<BoxWithSerialization> boxesList) {
+    final selectedBoxWithSerialization = boxesList.singleWhere(
+      (element) => element.box.name == boxName,
     );
-    if (selectedBox.values.isEmpty) {
+    if (selectedBoxWithSerialization.box.values.isEmpty) {
       widget.onError('Box is Empty');
     } else {
       _hiveViewState.value = _hiveViewState.value.copyWith(
-        currentOpenedBox: selectedBox,
-        selectedBoxValue: selectedBox.values
-            .map<Map<String, dynamic>>((e) => e.toJson())
-            .toList(),
+        currentOpenedBox: selectedBoxWithSerialization.box,
+        selectedBoxValue: selectedBoxWithSerialization.box.values.map<Map<String, dynamic>>((e) {
+          // print(e);
+          return selectedBoxWithSerialization.toMap(e);
+        }).toList(),
         objectNestedIndices: [],
       );
       _pageController.jumpToPage(1);
@@ -243,7 +253,7 @@ class _HiveBoxesViewState extends State<HiveBoxesView> {
         });
         final selectedBox = viewState.currentOpenedBox;
 
-        final boxesList = viewState.boxesMap.keys.toList();
+        final boxesList = viewState.boxesMap.map((e) => e.box).toList();
 
         final boxColumns = viewState.selectedBoxValue
             ?.firstWhere((element) => element.keys.length == maximumKeys)
@@ -268,7 +278,7 @@ class _HiveBoxesViewState extends State<HiveBoxesView> {
                   boxes: boxesList.toList(),
                   onBoxNameSelected: (boxName) => _onBoxSelected(
                     boxName,
-                    boxesList,
+                    viewState.boxesMap,
                   ),
                 ),
                 if (boxIsNotEmpty(boxColumns, boxRows))

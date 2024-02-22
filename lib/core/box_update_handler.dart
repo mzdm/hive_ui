@@ -37,10 +37,9 @@ class BoxUpdateHandler {
     // }
 
     try {
-      bool isThereBoxes = _hiveViewState.boxesMap.entries.isNotEmpty;
+      bool isThereBoxes = _hiveViewState.boxesMap.isNotEmpty;
       bool isFoundOpenBox = _hiveViewState.currentOpenedBox != null;
-      bool isHaveIdProperty =
-          addedObject.keys.any((element) => element == "id");
+      bool isHaveIdProperty = addedObject.keys.any((element) => element == "id");
       if (!isThereBoxes) {
         _errorCallback("there is Not Boxes");
         return false;
@@ -53,7 +52,8 @@ class BoxUpdateHandler {
       } else {
         final currentBox = _hiveViewState.currentOpenedBox!;
 
-        final fromJson = _hiveViewState.boxesMap[currentBox]!;
+        final fromJson =
+            _hiveViewState.boxesMap.firstWhere((e) => e.box.name == currentBox.name).fromJson;
         final newAddedObject = fromJson(addedObject);
         await currentBox.put(addedObject["id"], newAddedObject);
         return true;
@@ -99,7 +99,7 @@ class BoxUpdateHandler {
     dynamic replacementObject,
   ) async {
     try {
-      final fromJson = _hiveViewState.boxesMap[box]!;
+      final fromJson = _hiveViewState.boxesMap.firstWhere((e) => e.box.name == box.name).fromJson;
       final updatedObject = fromJson(replacementObject);
       await box.putAt(indexOfObject, updatedObject);
       return true;
@@ -119,8 +119,7 @@ class BoxUpdateHandler {
     final indices = viewState.objectNestedIndices!;
     final firstIndexMap = indices.first;
     final lastIndexMap = indices.last;
-    var refObj =
-        boxValue[firstIndexMap.keys.single][firstIndexMap.values.single];
+    var refObj = boxValue[firstIndexMap.keys.single][firstIndexMap.values.single];
     if (indices.length == 1) {
       refObj.clear();
     } else {
@@ -165,8 +164,7 @@ class BoxUpdateHandler {
     } else {
       final firstIndexMap = nestedObjectIndices.first;
       final lastIndexMap = nestedObjectIndices.last;
-      var refObj =
-          boxValue[firstIndexMap.keys.single][firstIndexMap.values.single];
+      var refObj = boxValue[firstIndexMap.keys.single][firstIndexMap.values.single];
       if (nestedObjectIndices.length == 1) {
         for (int index in rowIndices) {
           refObj.removeAt(index);
