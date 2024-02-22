@@ -60,7 +60,7 @@ mixin BoxViewMixin on State<HiveBoxesDetails> {
       if (field.runtimeType == List<Map<String, dynamic>>) {
         return 'List OF Objects';
       } else if (isMap(field)) {
-        return "Object";
+        return "--Click to examine--";
       } else if (isList(field)) {
         return 'List';
       } else {

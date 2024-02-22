@@ -214,10 +214,9 @@ class _HiveBoxesDetailsState extends State<HiveBoxesDetails> with BoxViewMixin {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 32.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+            child: Wrap(
               children: [
-                ElevatedButton(
+                TextButton(
                   onPressed: () => widget.onAddRow.call(
                     {},
                     _paginationModel.value.columnsKeysToShow,
@@ -229,8 +228,7 @@ class _HiveBoxesDetailsState extends State<HiveBoxesDetails> with BoxViewMixin {
                     child: Text('Add New'),
                   ),
                 ),
-                const SizedBox(width: 32),
-                ElevatedButton(
+                TextButton(
                   onPressed: widget.onDeleteAll,
                   style: ElevatedButton.styleFrom(
                     fixedSize: buttonSize,
@@ -239,9 +237,8 @@ class _HiveBoxesDetailsState extends State<HiveBoxesDetails> with BoxViewMixin {
                     child: Text('Delete All'),
                   ),
                 ),
-                const SizedBox(width: 32),
                 if (enableSelection)
-                  ElevatedButton(
+                  TextButton(
                     onPressed: () {
                       final objectsIndices = getSelectedObjectIndices();
                       widget.onDeleteRows?.call(objectsIndices);
@@ -253,8 +250,7 @@ class _HiveBoxesDetailsState extends State<HiveBoxesDetails> with BoxViewMixin {
                       child: Text('Delete Selected'),
                     ),
                   ),
-                const SizedBox(width: 32),
-                ElevatedButton(
+                TextButton(
                   onPressed: () async {
                     final selectedColumns = await showDialog(
                       context: context,
@@ -277,8 +273,7 @@ class _HiveBoxesDetailsState extends State<HiveBoxesDetails> with BoxViewMixin {
                     child: Text('Select Columns'),
                   ),
                 ),
-                const SizedBox(width: 32),
-                ElevatedButton(
+                TextButton(
                   style: ElevatedButton.styleFrom(
                     fixedSize: buttonSize,
                   ),
@@ -316,14 +311,33 @@ class _HiveBoxesDetailsState extends State<HiveBoxesDetails> with BoxViewMixin {
                               _horizontalScrollController, // <---- Here, the controller
 
                           scrollDirection: Axis.horizontal,
-                          child: DataTable(
-                            headingTextStyle: const TextStyle(
-                              fontWeight: FontWeight.w600,
-                              color: Colors.deepPurpleAccent,
+                          child: Theme(
+                            data: Theme.of(context).copyWith(
+                              colorScheme: ThemeData.light().colorScheme.copyWith(
+                                onPrimary: Colors.white, // Color for checkmark in datatable
+                                primary: Colors.black, // Color used for checkbox fill in datatable
+                              ),
+                              checkboxTheme: CheckboxThemeData(
+                                side: MaterialStateBorderSide.resolveWith(
+                                        (_) => const BorderSide(width: 1, color: Colors.transparent)),
+                                fillColor: MaterialStateProperty.all(Colors.grey.shade100),
+                                checkColor: MaterialStateProperty.all(Colors.black),
+                              ),
                             ),
-                            columns:
-                                mapToDataColumns(pagination.columnsKeysToShow),
-                            rows: getRowsByPage(pagination),
+                            child: DataTable(
+                              headingTextStyle: const TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color: Colors.deepPurpleAccent,
+                              ),
+                              dataRowColor: MaterialStateProperty.resolveWith(
+                                (states) => states.contains(MaterialState.selected)
+                                    ? Colors.grey.shade200
+                                    : Colors.white,
+                              ),
+                              columns:
+                                  mapToDataColumns(pagination.columnsKeysToShow),
+                              rows: getRowsByPage(pagination),
+                            ),
                           ),
                         ),
                       ),
