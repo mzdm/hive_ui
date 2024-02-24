@@ -15,19 +15,29 @@ typedef FieldPressedCallback = void Function(
   Map<String, dynamic> objectAsJson, {
   int? objectIndex,
 });
+
 typedef ErrorCallback = void Function(String errorMessage);
+
 typedef FromJsonConverter = dynamic Function(dynamic json);
 typedef ToJsonConverter = dynamic Function(dynamic object);
-typedef ToMapConverter = Map<String, dynamic> Function(String str);
+typedef ToMapConverter = Map<String, dynamic> Function(String str, String key);
 typedef FromMapConverter = dynamic Function(Map<String, dynamic> map);
 
-typedef BoxWithSerialization = ({
-  Box<dynamic> box,
-  ToJsonConverter toJson,
-  FromJsonConverter fromJson,
-  ToMapConverter toMap,
-  FromMapConverter fromMap,
-});
+class BoxWithSerialization {
+  BoxWithSerialization({
+    required this.box,
+    required this.toJson,
+    required this.fromJson,
+    required this.toMap,
+    required this.fromMap,
+  });
+
+  final Box<dynamic> box;
+  final ToJsonConverter toJson;
+  final FromJsonConverter fromJson;
+  final ToMapConverter toMap;
+  final FromMapConverter fromMap;
+}
 
 class HiveBoxesView extends StatefulWidget {
   final Color? appBarColor;
@@ -94,8 +104,7 @@ class _HiveBoxesViewState extends State<HiveBoxesView> {
     if (isDeleted) {
       final newNestedObjects = _hiveViewState.value.nestedObjectList!;
       newNestedObjects.removeLast();
-      _hiveViewState.value =
-          _hiveViewState.value.copyWith(nestedObjectList: newNestedObjects);
+      _hiveViewState.value = _hiveViewState.value.copyWith(nestedObjectList: newNestedObjects);
     }
   }
 
@@ -143,8 +152,7 @@ class _HiveBoxesViewState extends State<HiveBoxesView> {
     int? objectIndex,
   }) async {
     dynamic fieldValue = objectAsJson[fieldName];
-    if ((fieldValue.runtimeType == List<Map<String, dynamic>>) ||
-        isMap(fieldValue)) {
+    if ((fieldValue.runtimeType == List<Map<String, dynamic>>) || isMap(fieldValue)) {
       if (fieldValue.isEmpty) {
         widget.onError('Field is Empty');
         return;
@@ -153,8 +161,7 @@ class _HiveBoxesViewState extends State<HiveBoxesView> {
       var objectNestedIndices = _hiveViewState.value.objectNestedIndices ?? [];
       if (isMap(fieldValue)) {
         nestedObjectList.add([fieldValue]);
-        objectNestedIndices.add(
-            {objectNestedIndices.isNotEmpty ? -1 : objectIndex!: fieldName});
+        objectNestedIndices.add({objectNestedIndices.isNotEmpty ? -1 : objectIndex!: fieldName});
       } else {
         nestedObjectList.add(fieldValue);
         objectNestedIndices.add({objectIndex!: fieldName});
@@ -175,8 +182,7 @@ class _HiveBoxesViewState extends State<HiveBoxesView> {
           dateFormat: widget.dateFormat,
         ),
       );
-      final indexOfUpdatedObject =
-          _hiveViewState.value.selectedBoxValue!.indexOf(
+      final indexOfUpdatedObject = _hiveViewState.value.selectedBoxValue!.indexOf(
         updatedObject ?? {},
       );
       if (updatedObject != null) {
@@ -201,9 +207,11 @@ class _HiveBoxesViewState extends State<HiveBoxesView> {
     } else {
       _hiveViewState.value = _hiveViewState.value.copyWith(
         currentOpenedBox: selectedBoxWithSerialization.box,
-        selectedBoxValue: selectedBoxWithSerialization.box.values.map<Map<String, dynamic>>((e) {
-          // print(e);
-          return selectedBoxWithSerialization.toMap(e.toString());
+        selectedBoxValue:
+            selectedBoxWithSerialization.box.toMap().entries.map<Map<String, dynamic>>((entry) {
+          // print(entry.toString());
+          final val = entry.value.toString();
+          return selectedBoxWithSerialization.toMap(val, entry.key);
         }).toList(),
         objectNestedIndices: [],
       );
@@ -299,12 +307,9 @@ class _HiveBoxesViewState extends State<HiveBoxesView> {
                     columns: boxColumns!,
                     rows: boxRows!,
                   ),
-                if (viewState.nestedObjectList != null &&
-                    viewState.nestedObjectList!.isNotEmpty)
-                  ...viewState.nestedObjectList!
-                      .map<HiveBoxesDetails>((nestedObject) {
-                    final index =
-                        viewState.nestedObjectList!.indexOf(nestedObject);
+                if (viewState.nestedObjectList != null && viewState.nestedObjectList!.isNotEmpty)
+                  ...viewState.nestedObjectList!.map<HiveBoxesDetails>((nestedObject) {
+                    final index = viewState.nestedObjectList!.indexOf(nestedObject);
                     final objectColumns = nestedObject.first.keys.toList();
                     final objectRows = nestedObject;
                     return HiveBoxesDetails(
@@ -327,8 +332,7 @@ class _HiveBoxesViewState extends State<HiveBoxesView> {
                         );
                       },
                       onBackPressed: () => _onExitNestedObjectView(2 + index),
-                      onAddRow: (objectAsJson, columns) =>
-                          _onAddRow(objectAsJson, columns),
+                      onAddRow: (objectAsJson, columns) => _onAddRow(objectAsJson, columns),
                       columnTitleTextStyle: widget.columnTitleTextStyle,
                       rowTitleTextStyle: widget.rowTitleTextStyle,
                       columns: objectColumns,

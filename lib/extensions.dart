@@ -58,11 +58,11 @@ mixin BoxViewMixin on State<HiveBoxesDetails> {
       dynamic field,
     ) {
       if (field.runtimeType == List<Map<String, dynamic>>) {
-        return 'List OF Objects';
+        return '--List of Objects--';
       } else if (isMap(field)) {
-        return "--Click to examine--";
+        return "--Examine--";
       } else if (isList(field)) {
-        return 'List';
+        return '--List--';
       } else {
         return field.toString();
       }
@@ -79,14 +79,15 @@ mixin BoxViewMixin on State<HiveBoxesDetails> {
       selected: isSelected,
       cells: rowKeys.map<DataCell>((fieldName) {
         final cellValue = dataCellValue(objectAsJson[fieldName]);
-        final isList = cellValue == 'List';
+        final isList = cellValue == '--List--';
         return DataCell(
           onLongPress: () {
             final value = objectAsJson[fieldName];
             final json = const JsonEncoder.withIndent('  ').convert(value);
             FlutterClipboardHiveUi.copy(json);
           },
-          Center(
+          Align(
+            alignment: Alignment.centerLeft,
             child: Text(
               cellValue,
             ),
