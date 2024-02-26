@@ -211,7 +211,7 @@ class _HiveBoxesViewState extends State<HiveBoxesView> {
             selectedBoxWithSerialization.box.toMap().entries.map<Map<String, dynamic>>((entry) {
           // print(entry.toString());
           final val = entry.value.toString();
-          return selectedBoxWithSerialization.toMap(val, entry.key);
+          return selectedBoxWithSerialization.toMap(val, entry.key.toString());
         }).toList(),
         objectNestedIndices: [],
       );
