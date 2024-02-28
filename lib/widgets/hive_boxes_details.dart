@@ -214,83 +214,92 @@ class _HiveBoxesDetailsState extends State<HiveBoxesDetails> with BoxViewMixin {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 2.0),
-            child: Wrap(
-              spacing: -40,
-              runSpacing: -10,
+            child: Row(
               children: [
-                TextButton(
-                  onPressed: () => widget.onAddRow.call(
-                    {},
-                    _paginationModel.value.columnsKeysToShow,
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    fixedSize: buttonSize,
-                  ),
-                  child: const FittedBox(
-                    child: Text('Add New'),
-                  ),
-                ),
-                TextButton(
-                  onPressed: widget.onDeleteAll,
-                  style: ElevatedButton.styleFrom(
-                    fixedSize: buttonSize,
-                  ),
-                  child: const FittedBox(
-                    child: Text('Delete All'),
+                Visibility(
+                  visible: false, // not needed for now
+                  child: TextButton(
+                    onPressed: () => widget.onAddRow.call(
+                      {},
+                      _paginationModel.value.columnsKeysToShow,
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      fixedSize: buttonSize,
+                    ),
+                    child: const FittedBox(
+                      child: Text('Add New'),
+                    ),
                   ),
                 ),
-                if (enableSelection)
-                  TextButton(
-                    onPressed: () {
-                      final objectsIndices = getSelectedObjectIndices();
-                      widget.onDeleteRows?.call(objectsIndices);
+                Flexible(
+                  child: TextButton(
+                    onPressed: () async {
+                      final selectedColumns = await showDialog(
+                        context: context,
+                        builder: (_) => ColumnsFilterDialog(
+                          allColumns: widget.columns,
+                          selectedColumns:
+                              _paginationModel.value.columnsKeysToShow,
+                        ),
+                      );
+                      if (selectedColumns != null) {
+                        _paginationModel.value = _paginationModel.value.copyWith(
+                          columnsKeysToShow: selectedColumns,
+                        );
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       fixedSize: buttonSize,
                     ),
                     child: const FittedBox(
-                      child: Text('Delete Selected'),
+                      child: Text('Select Columns\nto Show'),
                     ),
                   ),
-                TextButton(
-                  onPressed: () async {
-                    final selectedColumns = await showDialog(
-                      context: context,
-                      builder: (_) => ColumnsFilterDialog(
-                        allColumns: widget.columns,
-                        selectedColumns:
-                            _paginationModel.value.columnsKeysToShow,
-                      ),
-                    );
-                    if (selectedColumns != null) {
-                      _paginationModel.value = _paginationModel.value.copyWith(
-                        columnsKeysToShow: selectedColumns,
-                      );
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    fixedSize: buttonSize,
-                  ),
-                  child: const FittedBox(
-                    child: Text('Select Columns'),
+                ),
+                Flexible(
+                  child: TextButton(
+                    style: ElevatedButton.styleFrom(
+                      fixedSize: buttonSize,
+                    ),
+                    onPressed: () {
+                      final objectsIndices = getSelectedObjectIndices();
+                      final objects = [];
+                      for (int index in objectsIndices) {
+                        objects.add(widget.rows[index]);
+                      }
+                      final json =
+                          const JsonEncoder.withIndent("  ").convert(objects);
+                      FlutterClipboardHiveUi.copy(json);
+                    },
+                    child: const Text('Copy Selected'),
                   ),
                 ),
-                TextButton(
-                  style: ElevatedButton.styleFrom(
-                    fixedSize: buttonSize,
+                if (enableSelection)
+                  Flexible(
+                    child: TextButton(
+                      onPressed: () {
+                        final objectsIndices = getSelectedObjectIndices();
+                        widget.onDeleteRows?.call(objectsIndices);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        fixedSize: buttonSize,
+                      ),
+                      child: const FittedBox(
+                        child: Text('Delete Selected'),
+                      ),
+                    ),
                   ),
-                  onPressed: () {
-                    final objectsIndices = getSelectedObjectIndices();
-                    final objects = [];
-                    for (int index in objectsIndices) {
-                      objects.add(widget.rows[index]);
-                    }
-                    final json =
-                        const JsonEncoder.withIndent("  ").convert(objects);
-                    FlutterClipboardHiveUi.copy(json);
-                  },
-                  child: const Text('Copy Selected'),
-                )
+                Flexible(
+                  child: TextButton(
+                    onPressed: widget.onDeleteAll,
+                    style: ElevatedButton.styleFrom(
+                      fixedSize: buttonSize,
+                    ),
+                    child: const FittedBox(
+                      child: Text('Delete All'),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),

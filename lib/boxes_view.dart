@@ -174,6 +174,7 @@ class _HiveBoxesViewState extends State<HiveBoxesView> {
       _pageController.jumpToPage(pageIndex + 1);
     } else if (fieldValue.runtimeType == List<String>) {
     } else {
+      return; // update dialog not fully implemented
       final updatedObject = await showDialog(
         context: context,
         builder: (_) => UpdateDialog(
