@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 
@@ -40,6 +41,7 @@ mixin BoxViewMixin on State<HiveBoxesDetails> {
           ),
         ),
       );
+
   DataRow buildRow({
     required Map<String, dynamic> objectAsJson,
     required FieldPressedCallback onFieldPressed,
@@ -48,8 +50,7 @@ mixin BoxViewMixin on State<HiveBoxesDetails> {
     required void Function({
       required bool selected,
       required int index,
-    })
-        onSelectRow,
+    }) onSelectRow,
     required bool isSelected,
     required bool enableSelection,
     required List<String> keys,
@@ -74,36 +75,30 @@ mixin BoxViewMixin on State<HiveBoxesDetails> {
     return DataRow(
       onSelectChanged: !enableSelection
           ? null
-          : (isSelected) =>
-              onSelectRow(selected: isSelected!, index: objectIndex),
+          : (isSelected) => onSelectRow(selected: isSelected!, index: objectIndex),
       selected: isSelected,
       cells: rowKeys.map<DataCell>((fieldName) {
         final cellValue = dataCellValue(objectAsJson[fieldName]);
-        final isList = cellValue == '--List--';
         return DataCell(
-          onLongPress: () {
-            final value = objectAsJson[fieldName];
-            final json = const JsonEncoder.withIndent('  ').convert(value);
-            FlutterClipboardHiveUi.copy(json);
-          },
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              cellValue,
+            onLongPress: () {
+              final value = objectAsJson[fieldName];
+              final json = const JsonEncoder.withIndent('  ').convert(value);
+              FlutterClipboardHiveUi.copy(json);
+            },
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                cellValue,
+              ),
             ),
-          ),
-          onTap: () => !isList
-              ? onFieldPressed(
-                  "boxName",
-                  fieldName,
-                  objectAsJson,
-                  objectIndex: objectIndex,
-                )
-              : showListDetailsDialog(
-                  fieldName,
-                  objectAsJson[fieldName] as List,
-                ),
-        );
+            onTap: () {
+              onFieldPressed(
+                "boxName",
+                fieldName,
+                objectAsJson,
+                objectIndex: objectIndex,
+              );
+            });
       }).toList(),
     );
   }

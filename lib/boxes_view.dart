@@ -152,6 +152,13 @@ class _HiveBoxesViewState extends State<HiveBoxesView> {
     int? objectIndex,
   }) async {
     dynamic fieldValue = objectAsJson[fieldName];
+    if (fieldValue.runtimeType == List<Object?>) {
+      fieldValue = [
+        for (var fieldMap in objectAsJson[fieldName] as List)
+          fieldMap as Map<String, dynamic>
+      ];
+    }
+
     if ((fieldValue.runtimeType == List<Map<String, dynamic>>) || isMap(fieldValue)) {
       if (fieldValue.isEmpty) {
         widget.onError('Field is Empty');
