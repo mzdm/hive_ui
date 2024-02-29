@@ -23,6 +23,7 @@ class HiveBoxesDetails extends StatefulWidget {
     Map<String, dynamic> rowIndices,
     List<String> columns,
   ) onAddRow;
+  final bool deleteEnabled;
 
   const HiveBoxesDetails({
     Key? key,
@@ -35,6 +36,7 @@ class HiveBoxesDetails extends StatefulWidget {
     required this.rows,
     required this.onFieldPressed,
     required this.onAddRow,
+    required this.deleteEnabled,
   }) : super(key: key);
 
   @override
@@ -274,7 +276,7 @@ class _HiveBoxesDetailsState extends State<HiveBoxesDetails> with BoxViewMixin {
                     child: const Text('Copy Selected'),
                   ),
                 ),
-                if (enableSelection)
+                if (enableSelection && widget.deleteEnabled)
                   Flexible(
                     child: TextButton(
                       onPressed: () {
@@ -289,6 +291,7 @@ class _HiveBoxesDetailsState extends State<HiveBoxesDetails> with BoxViewMixin {
                       ),
                     ),
                   ),
+                if (widget.deleteEnabled)
                 Flexible(
                   child: TextButton(
                     onPressed: widget.onDeleteAll,

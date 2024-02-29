@@ -47,6 +47,7 @@ class HiveBoxesView extends StatefulWidget {
 
   final ErrorCallback onError;
   final String? dateFormat;
+  final bool deleteEnabled;
 
   const HiveBoxesView({
     Key? key,
@@ -56,6 +57,7 @@ class HiveBoxesView extends StatefulWidget {
     required this.hiveBoxes,
     required this.onError,
     this.dateFormat,
+    this.deleteEnabled = false,
   }) : super(key: key);
 
   @override
@@ -301,6 +303,7 @@ class _HiveBoxesViewState extends State<HiveBoxesView> {
                 ),
                 if (boxIsNotEmpty(boxColumns, boxRows))
                   HiveBoxesDetails(
+                    deleteEnabled: widget.deleteEnabled,
                     onDeleteRows: (objectIndices) {
                       _onDeleteRows(objectIndices);
                     },
@@ -321,6 +324,7 @@ class _HiveBoxesViewState extends State<HiveBoxesView> {
                     final objectColumns = nestedObject.first.keys.toList();
                     final objectRows = nestedObject;
                     return HiveBoxesDetails(
+                      deleteEnabled: widget.deleteEnabled,
                       onDeleteRows: (objectIndices) {
                         _onDeleteRows(objectIndices);
                       },
