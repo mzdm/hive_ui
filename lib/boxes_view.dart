@@ -156,8 +156,12 @@ class _HiveBoxesViewState extends State<HiveBoxesView> {
     dynamic fieldValue = objectAsJson[fieldName];
     if (fieldValue.runtimeType == List<Object?>) {
       fieldValue = [
-        for (var fieldMap in objectAsJson[fieldName] as List)
-          fieldMap as Map<String, dynamic>
+        for (var i = 0; i < fieldValue.length; i++)
+          fieldValue[i] is String
+              ? {
+                  "": "$i: ${fieldValue[i]}"
+                }
+              : fieldValue[i] as Map<String, dynamic>
       ];
     }
 
